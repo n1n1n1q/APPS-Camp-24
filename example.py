@@ -4,7 +4,6 @@ Example bot
 
 import os
 import telebot
-import datetime
 import random
 from collections import defaultdict
 
@@ -17,6 +16,7 @@ active_users = defaultdict(set)
 
 def greet_user(messages):
     for message in messages:
+<<<<<<< HEAD
         for new_member in message.new_chat_members:
             bot.send_message(message.chat.id, f"Привіт, {new_member.first_name}!")
             
@@ -25,6 +25,11 @@ def delete_symb(messages):
     for i in charecters:
         messages = messages.replace(i, "")
     return messages
+=======
+        if message.new_chat_members is not None:
+            for new_member in message.new_chat_members:
+                bot.send_message(message.chat.id, f"Привіт, {new_member.first_name}!")
+>>>>>>> 589eb8f (handle vote command)
 
 def update_message_list(messages):
     for message in messages:
@@ -60,7 +65,20 @@ def random_end(message):
 
 @bot.message_handler(commands=["start", "hello"])
 def send_welcome(message):
-    bot.reply_to(message, "Hello!")
+    bot.reply_to(message, "Hello!!!!!!!!!!!!!!!!!!!!1!")
+
+@bot.message_handler(commands=["vote"])
+def handle_vote(message):
+    print(message.text)
+    if message.chat.type == "supergroup" or "group":
+        players, player_choices = get_players_and_choices(message)
+        if message.text == "/vote":
+            ...
+        else:
+            ...
+        bot.send_message(message.chat.id, "Vote")
+    else:
+        bot.send_message("Голосування доступне лише в групах")
 
 @bot.message_handler(func=lambda msg: True)
 def randomized_message(message):
@@ -79,7 +97,15 @@ def randomized_message(message):
 @bot.message_handler(func=lambda msg: "привіт" in msg.text)
 def respond_to_hello(message):
     bot.reply_to(message, "привіт!")
+    
 
+def get_players_and_choices(message):
+    players = active_users[message.chat.id]
+    if len(players) > 10:
+        player_choices = random.sample(players, 10)
+    else:
+        player_choices = players
+    return players, player_choices
 
 
 bot.set_update_listener(greet_user)
