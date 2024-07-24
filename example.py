@@ -16,20 +16,16 @@ active_users = defaultdict(set)
 
 def greet_user(messages):
     for message in messages:
-<<<<<<< HEAD
-        for new_member in message.new_chat_members:
-            bot.send_message(message.chat.id, f"Привіт, {new_member.first_name}!")
+        if message.new_chat_members is not None:
+            for new_member in message.new_chat_members:
+                bot.send_message(message.chat.id, f"Привіт, {new_member.first_name}!")
+
             
 def delete_symb(messages):
     charecters = [',', '.','<','>','/','?','.',';',':','[',']','!', '@', '#', '№', '$', '%', '^', '*', '&', '(', ')', '-', '=', '+', '-']
     for i in charecters:
         messages = messages.replace(i, "")
     return messages
-=======
-        if message.new_chat_members is not None:
-            for new_member in message.new_chat_members:
-                bot.send_message(message.chat.id, f"Привіт, {new_member.first_name}!")
->>>>>>> 589eb8f (handle vote command)
 
 def update_message_list(messages):
     for message in messages:
