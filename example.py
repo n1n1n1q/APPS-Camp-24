@@ -19,6 +19,12 @@ def greet_user(messages):
     for message in messages:
         for new_member in message.new_chat_members:
             bot.send_message(message.chat.id, f"Привіт, {new_member.first_name}!")
+            
+def delete_symb(messages):
+    charecters = [',', '.','<','>','/','?','.',';',':','[',']','!', '@', '#', '№', '$', '%', '^', '*', '&', '(', ')', '-', '=', '+', '-']
+    for i in charecters:
+        messages = messages.replace(i, "")
+    return messages
 
 def update_message_list(messages):
     for message in messages:
@@ -47,6 +53,10 @@ def generate_message(message):
         )
     return message_text
 
+def random_end(message):
+    characters = [':)', ':(', "..", '.', "!", "?", "?!"]
+    message += random.choice(characters)
+    return message
 
 @bot.message_handler(commands=["start", "hello"])
 def send_welcome(message):
