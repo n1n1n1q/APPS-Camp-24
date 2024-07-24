@@ -8,12 +8,6 @@ import datetime
 import random
 from collections import defaultdict
 
-# - active user list
-# - randomized messages
-#   - functions
-#   - inline
-#   - reply
-
 BOT_TOKEN = os.environ.get("BOT_TOKEN_EXAMPLE")
 bot = telebot.TeleBot(BOT_TOKEN)
 
