@@ -3,43 +3,101 @@ Example bot
 """
 
 import os
-import telebot
 import random
 from collections import defaultdict
 
-BOT_TOKEN = os.environ.get("BOT_TOKEN_EXAMPLE")
+import data
+import telebot
+
+BOT_TOKEN = os.environ.get("BOT_TOKEN")
 bot = telebot.TeleBot(BOT_TOKEN)
 
 message_list = defaultdict(set)
 active_users = defaultdict(set)
+questions = data.load_data("data/questions.txt")
+polls = {}
 
 
 def greet_user(messages):
+    """
+    ...
+    """
     for message in messages:
         if message.new_chat_members is not None:
             for new_member in message.new_chat_members:
                 bot.send_message(message.chat.id, f"Привіт, {new_member.first_name}!")
 
-            
+def get_mentions(users):
+    """
+    Get mentions.
+    """
+    mentions = []
+    for i, user in enumerate(users):
+        mentions.append(f"{i+1} - ["+user[1]+"](tg://user?id="+str(user[0])+")")
+    return mentions
+
+
 def delete_symb(messages):
-    charecters = [',', '.','<','>','/','?','.',';',':','[',']','!', '@', '#', '№', '$', '%', '^', '*', '&', '(', ')', '-', '=', '+', '-']
+    """
+    ...
+    """
+    charecters = [
+        ",",
+        ".",
+        "<",
+        ">",
+        "/",
+        "?",
+        ".",
+        ";",
+        ":",
+        "[",
+        "]",
+        "!",
+        "@",
+        "#",
+        "№",
+        "$",
+        "%",
+        "^",
+        "*",
+        "&",
+        "(",
+        ")",
+        "-",
+        "=",
+        "+",
+        "-",
+    ]
     for i in charecters:
         messages = messages.replace(i, "")
     return messages
 
+
 def update_message_list(messages):
+    """
+    ...
+    """
     for message in messages:
         for i in message.text.split():
-                if i != "" or "@" not in i:
-                    message_list[message.chat.id].add(i)
+            if i != "" or "@" not in i:
+                message_list[message.chat.id].add(i)
+
 
 def add_active_users(messages):
+    """
+    ...
+    """
     for message in messages:
         if message.from_user.id not in active_users[message.chat.id]:
-            active_users[message.chat.id].add(message.from_user.id)
+            active_users[message.chat.id].add((message.from_user.id,message.from_user.first_name))
+
+
 
 def generate_message(message):
-
+    """
+    ...
+    """
     if "@" not in message.text and random.random() > 0.5:
         message_text = message.text.split()
         message_text[random.randint(0, len(message_text)) - 1] = random.choice(
@@ -50,34 +108,63 @@ def generate_message(message):
     else:
         message_len = random.randint(1, min(len(message_list[message.chat.id]), 13))
         message_text = " ".join(
-            [random.choice(list(message_list[message.chat.id])) for _ in range(message_len)]
+            [
+                random.choice(list(message_list[message.chat.id]))
+                for _ in range(message_len)
+            ]
         )
     return message_text
 
+
 def random_end(message):
-    characters = [':)', ':(', "..", '.', "!", "?", "?!"]
+    """
+    ...
+    """
+    characters = [":)", ":(", "..", ".", "!", "?", "?!"]
     message += random.choice(characters)
     return message
 
+
 @bot.message_handler(commands=["start", "hello"])
 def send_welcome(message):
+    """
+    ...
+    """
     bot.reply_to(message, "Hello!!!!!!!!!!!!!!!!!!!!1!")
+
 
 @bot.message_handler(commands=["vote"])
 def handle_vote(message):
+    """
+    ...
+    """
     print(message.text)
     if message.chat.type == "supergroup" or "group":
-        players, player_choices = get_players_and_choices(message)
-        if message.text == "/vote":
-            ...
+        _, player_choices = get_players_and_choices(message)
+        if len(player_choices) == 1:
+            bot.send_message(message.chat.id,f"Замала кількість активних учасників. Потрібно ще {2-len(player_choices)} для створення голосування.")
         else:
-            ...
-        bot.send_message(message.chat.id, "Vote")
+            q = random.choice(list(questions))
+            msg = f"""{q}
+Опції:
+{'\n'.join(get_mentions(player_choices))}
+"""
+            bot.send_message(message.chat.id, msg, parse_mode="Markdown")
+            bot.send_poll(
+                message.chat.id,
+                q,
+                list(map(str,range(1, len(player_choices)+1))),
+                is_anonymous=False,
+            )
     else:
         bot.send_message("Голосування доступне лише в групах")
 
+
 @bot.message_handler(func=lambda msg: True)
 def randomized_message(message):
+    """
+    ...
+    """
     if message.chat.type == "group" or message.chat.type == "supergroup":
         if (
             random.random() > 0.9
@@ -90,17 +177,18 @@ def randomized_message(message):
             message_text = generate_message(message)
             bot.reply_to(message, message_text)
 
-@bot.message_handler(func=lambda msg: "привіт" in msg.text)
-def respond_to_hello(message):
-    bot.reply_to(message, "привіт!")
-    
 
 def get_players_and_choices(message):
+    """
+    ...
+    """
     players = active_users[message.chat.id]
     if len(players) > 10:
         player_choices = random.sample(players, 10)
     else:
         player_choices = players
+    print(type(player_choices))
+    print(player_choices)
     return players, player_choices
 
 
