@@ -105,7 +105,6 @@ def generate_message(message):
         message_text[random.randint(0, len(message_text)) - 1] = random.choice(
             list(message_list[message.chat.id])
         )
-        print(message_text)
         message_text = " ".join(message_text)
     else:
         message_len = random.randint(1, min(len(message_list[message.chat.id]), 13))
@@ -198,8 +197,6 @@ def get_players_and_choices(message):
         player_choices = random.sample(players, 10)
     else:
         player_choices = players
-    print(type(player_choices))
-    print(player_choices)
     return players, player_choices
 
 
