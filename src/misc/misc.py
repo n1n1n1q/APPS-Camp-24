@@ -140,3 +140,24 @@ def get_players_and_choices(message):
     else:
         player_choices = players
     return players, player_choices
+
+
+def generate_feedback(text, word, used_letters, underline, existing_letters):
+    feedback = []
+    for i in range(len(word)):
+        if text[i] == word[i]:
+            feedback.append(f"{text[i]} (вірно)\n")
+            if text[i] not in used_letters["correct"]:
+                used_letters["correct"].append((text[i], i + 1))
+            underline[i] = text[i]
+        elif text[i] in word:
+            feedback.append(f"{text[i]} (не на своєму місці)\n")
+            if text[i] not in used_letters["misplaced"]:
+                used_letters["misplaced"].append(text[i])
+            if text[i] not in existing_letters:
+                existing_letters.append(text[i])
+        else:
+            feedback.append(f"{text[i]} (немає в слові)\n")
+            if text[i] not in used_letters["absent"]:
+                used_letters["absent"].append(text[i])
+    return feedback
