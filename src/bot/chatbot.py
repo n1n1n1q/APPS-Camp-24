@@ -26,7 +26,7 @@ def preload():
         os.mkdir("./data")
 
     for file in os.listdir("data/"):
-        if file != "questions.txt":
+        if file not in ["questions.txt", "photo_start.jpeg", "words.txt"]:
             data_type, chat_id = file.split("_")
             match data_type:
                 case "users":
@@ -35,13 +35,13 @@ def preload():
                     message_list[int(chat_id)] = data.load_data(
                         "data/" + file, "messages"
                     )
-        #         case _:
-        #             raise ValueError(
-        #                 f"Invalid data type! \
-        # Possible options: users, messages. Got: {data_type}"
-        #             )
+                case _:
+                    raise ValueError(
+                        f"Invalid data type! \
+        Possible options: users, messages. Got: {data_type}"
+                    )
 
-    with open("data/result_filtered.txt", "r", encoding="UTF-8") as file:
+    with open("data/words.txt", "r", encoding="UTF-8") as file:
         counter = 0
         for line in file:
             line = line.split(", ")
@@ -105,7 +105,7 @@ def start_game(message):
         "attempts": 6,
         "used_letters": {"correct": [], "misplaced": [], "absent": []},
     }
-    with open("photo_start.jpeg", "rb") as photo:
+    with open("data/photo_start.jpeg", "rb") as photo:
         bot.send_photo(
             message.chat.id,
             photo,
