@@ -4,32 +4,144 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ніч команда нижній текст</title>
-    <link rel="stylesheet" href="styles.html" />
+    <link rel="stylesheet" href="styles.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <header>
-      <img src="/web/img/moon.png" alt="moon" />
+      <img src="img/moon.png" alt="moon" class="moon" />
       <div class="text-header">
-        <h1>Проєкт Ніч Команда</h1>
-        <div>
-          <p class="lower-text">нижній текст</p>
-          <img src="/web/img/flower.png" alt="flower" />
-          <p>
+        <h1>НІЧ КОМАНДА</h1>
+        <div class="row-text">
+          <p class="lower-text">верхній текст</p>
+          <img src="img/flower.png" alt="flower" class="flower text-flower" />
+          <p class="apps-camp">
             <span class="color-fiolet">apps</span>
             <span class="color-white">summer camp</span>
-            <span class="green-color">2024</span>
+            <span class="color-green">2024</span>
           </p>
         </div>
       </div>
-      <img src="/web/img/flower.png" alt="flower" />
-      <img src="/web/img/star.png" alt="star" />
-      <img src="/web/img/flower.png" alt="flower" />
-      <img src="/web/img/cloud.png" alt="cloud" />
-      <img src="/web/img/star.png" alt="star" />
-      <img src="/web/img/cloud.png" alt="cloud" />
+      <img src="img/stars.png" alt="star" class="header-star" />
     </header>
     <main>
-      <section></section>
+      <section class="wrapper">
+        <div class="info-bot">
+          <p class="text-functional">Що це таке?</p>
+          <p class="text">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem
+            ipsum dolor sit amet, consectetur adipiscing elit. Risus commodo
+            viverra maecenas. Lorem ipsum dolor sit amet, consectetur adipiscing
+            elit, sed do eiusmod.
+          </p>
+        </div>
+        <div class="functional">
+          <h2 class="text-functional">Функціонал</h2>
+          <ul>
+            <li>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </li>
+            <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+            <li>Risus commodo viverra maecenas.</li>
+            <li>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod.
+            </li>
+            <li>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod.
+            </li>
+            <li>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod.
+            </li>
+            <li>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod.
+            </li>
+          </ul>
+        </div>
+        <div class="qr-photo">
+          <div class="qr">
+            <h3 class="qr-text">Гра "Словко"</h3>
+            <img src="img/qr-code.jpg" alt="qr-code" class="screenshot" />
+          </div>
+          <div class="qr">
+            <h3 class="qr-text">Скануй Qr-код та тестуй телеграм бота</h3>
+            <img src="img/qr-code.jpg" alt="qr-code" class="qr-code" />
+          </div>
+          <div class="qr">
+            <h3 class="qr-text">Кумедні відповіді</h3>
+            <img src="img/qr-code.jpg" alt="qr-code" class="screenshot" />
+          </div>
+        </div>
+        <div class="team">
+          <div class="column">
+            <h2 class="text-functional">Наша команда</h2>
+            <div class="row">
+              <div class="team-member">
+                <h3 class="qr-text member-text">Артем Сидоренко</h3>
+                <img src="img/qr-code.jpg" alt="qr-code" class="qr-code" />
+              </div>
+              <div class="team-member">
+                <h3 class="qr-text member-text">Артем Сидоренко</h3>
+                <img src="img/qr-code.jpg" alt="qr-code" class="qr-code" />
+              </div>
+              <div class="team-member">
+                <h3 class="qr-text member-text">Артем Сидоренко</h3>
+                <img src="img/qr-code.jpg" alt="qr-code" class="qr-code" />
+              </div>
+              <div class="team-member">
+                <h3 class="qr-text member-text">Артем Сидоренко</h3>
+                <img src="img/qr-code.jpg" alt="qr-code" class="qr-code" />
+              </div>
+              <div class="column-mentors">
+                <div class="team-mentor">
+                  <h3 class="mentor-text">Басистий Олег</h3>
+                  <img src="" alt="qr-code" class="photo-mentor" />
+                </div>
+                <div class="team-mentor">
+                  <h3 class="mentor-text">Басистий Олег</h3>
+                  <img src="" alt="qr-code" class="photo-mentor" />
+                </div>
+                <div class="team-mentor">
+                  <h3 class="mentor-text">Басистий Олег</h3>
+                  <img src="" alt="photo-mentor" class="photo-mentor" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <footer>
+        <img src="img/cloud.png" alt="moon" class="cloud" />
+        <div class="text-footer">
+          <div class="row-text">
+            <p class="lower-text">нижній текст</p>
+            <img src="img/flower.png" alt="flower" class="flower text-flower" />
+            <p class="apps-camp">
+              <span class="color-fiolet">apps</span>
+              <span class="color-white">summer camp</span>
+              <span class="color-green">2024</span>
+            </p>
+          </div>
+        </div>
+        <a href="https://t.me/shpaktybot"
+          ><img
+            src="img/telegram-logo.jpg"
+            alt="telegram-logo"
+            class="telegram-logo"
+          />
+        </a>
+      </footer>
     </main>
   </body>
 </html>
