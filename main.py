@@ -9,13 +9,22 @@ from collections import defaultdict
 import data
 import telebot
 
-BOT_TOKEN = os.environ.get("BOT_TOKEN")
-bot = telebot.TeleBot(BOT_TOKEN)
+from bot import init_bot, start_bot
+
 
 
 def main():
     """
-    Initialize bot
+    Main function
+    """
+    init_bot()
+    preload()
+    start_bot()
+
+
+def preload():
+    """
+    Load preloaded data
     """
     if "data" not in os.listdir("./"):
         os.mkdir("./data")
@@ -44,21 +53,6 @@ def main():
     questions = data.load_data("data/questions.txt", "questions")
     global polls
     polls = {}
-    bot.set_update_listener(greet_user)
-    bot.set_update_listener(update_message_list)
-    bot.set_update_listener(add_active_users)
-
-    bot.infinity_polling()
-
-
-def greet_user(messages):
-    """
-    Greet user
-    """
-    for message in messages:
-        if message.new_chat_members is not None:
-            for new_member in message.new_chat_members:
-                bot.send_message(message.chat.id, f"Привіт, {new_member.first_name}!")
 
 
 def get_mentions(users):
@@ -247,6 +241,10 @@ def who_is(message):
         parse_mode="Markdown",
     )
 
+@bot.message_handler(func=lambda msg: ' чи ' in msg.text and msg.text.lower().startswith("шпак"))
+def whether(message):
+    options = message.text[5:].split('чи')
+    bot.reply_to(message, random.choice(options))
 
 @bot.message_handler(func=lambda msg: True)
 def randomized_message(message):
@@ -275,10 +273,10 @@ def get_players_and_choices(message):
     """
     players = active_users[message.chat.id]
     if len(players) > 10:
-        player_choices = random.sample(players, 10)
+        player_choices = random.sample(sorted(players), 10)
     else:
         player_choices = players
     return players, player_choices
 
-
-main()
+if __name__ =='__main__':
+    main()
