@@ -12,10 +12,43 @@ import telebot
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
 bot = telebot.TeleBot(BOT_TOKEN)
 
-message_list = defaultdict(set)
-active_users = defaultdict(set)
-questions = data.load_data("data/questions.txt")
-polls = {}
+
+def main():
+    """
+    Initialize bot
+    """
+    if "data" not in os.listdir("./"):
+        os.mkdir("./data")
+
+    global message_list
+    message_list = defaultdict(set)
+    global active_users
+    active_users = defaultdict(set)
+
+    for file in os.listdir("data/"):
+        if file != "questions.txt":
+            data_type, chat_id = file.split("_")
+            match data_type:
+                case "users":
+                    active_users[int(chat_id)] = data.load_data("data/" + file, "users")
+                case "chat":
+                    message_list[int(chat_id)] = data.load_data(
+                        "data/" + file, "messages"
+                    )
+                case _:
+                    raise ValueError(
+                        f"Invalid data type! \
+        Possible options: users, messages. Got: {data_type}"
+                    )
+    global questions
+    questions = data.load_data("data/questions.txt", "questions")
+    global polls
+    polls = {}
+    bot.set_update_listener(greet_user)
+    bot.set_update_listener(update_message_list)
+    bot.set_update_listener(add_active_users)
+
+    bot.infinity_polling()
 
 
 def greet_user(messages):
@@ -38,7 +71,7 @@ def get_mentions(users):
     return mentions
 
 
-def delete_symb(messages):
+def delete_symb(message):
     """
     Delete useless symbols
     """
@@ -47,7 +80,6 @@ def delete_symb(messages):
         ".",
         "<",
         ">",
-        "/",
         "?",
         ".",
         ";",
@@ -55,7 +87,6 @@ def delete_symb(messages):
         "[",
         "]",
         "!",
-        "@",
         "#",
         "№",
         "$",
@@ -68,11 +99,10 @@ def delete_symb(messages):
         "-",
         "=",
         "+",
-        "-",
     ]
     for i in charecters:
-        messages = messages.replace(i, "")
-    return messages
+        message = message.replace(i, "")
+    return message
 
 
 def update_message_list(messages):
@@ -80,9 +110,14 @@ def update_message_list(messages):
     Update messages list
     """
     for message in messages:
-        for i in message.text.split():
-            if i != "" or "@" not in i:
-                message_list[message.chat.id].add(i)
+        if not message.text.startswith("/"):
+            message_text = delete_symb(message.text).lower()
+            for i in message_text.split():
+                if i != "" and "@" not in i:
+                    message_list[message.chat.id].add(i)
+                    data.save_data(
+                        message_list[message.chat.id], "messages", message.chat.id
+                    )
 
 
 def add_active_users(messages):
@@ -94,6 +129,15 @@ def add_active_users(messages):
             active_users[message.chat.id].add(
                 (message.from_user.id, message.from_user.first_name)
             )
+            data.save_data(active_users[message.chat.id], "users", message.chat.id)
+
+
+def get_by_id(user_id):
+    try:
+        user = bot.get_chat(user_id)
+        return user.first_name
+    except Exception as e:
+        pass
 
 
 def generate_message(message):
@@ -114,6 +158,10 @@ def generate_message(message):
                 for _ in range(message_len)
             ]
         )
+    if random.random() > 0.8:
+        message_text = random_end(message_text)
+    if random.random() > 0.90:
+        message_text = message_text.upper()
     return message_text
 
 
@@ -121,7 +169,23 @@ def random_end(message):
     """
     Add random ending
     """
-    characters = [":)", ":(", "..", ".", "!", "?", "?!"]
+    characters = [
+        " :)",
+        " :(",
+        "..",
+        ".",
+        "!",
+        "?",
+        "?!",
+        ")))",
+        "))",
+        ")",
+        "(",
+        " :+)",
+        "!!!",
+        "...",
+        "?!?!?!",
+    ]
     message += random.choice(characters)
     return message
 
@@ -142,7 +206,6 @@ def handle_vote(message):
     """
     Handle vote command
     """
-    print(message.text)
     if message.chat.type == "supergroup" or "group":
         _, player_choices = get_players_and_choices(message)
         if len(player_choices) == 1:
@@ -168,6 +231,23 @@ def handle_vote(message):
         bot.send_message("Голосування доступне лише в групах")
 
 
+@bot.message_handler(func=lambda msg: msg.text.lower().startswith("шпак ти"))
+def ask_bot(message):
+    ans = random.choice(["Так, я", "Ні, я не"])
+    bot.reply_to(message, ans + message.text[7:].replace("?", ""))
+
+
+@bot.message_handler(func=lambda msg: msg.text.lower().startswith("шпак хто"))
+def who_is(message):
+    users, _ = get_players_and_choices(message)
+    user = random.choice(get_mentions(users))
+    bot.reply_to(
+        message,
+        user.split(" - ")[1] + message.text[8:].replace("?", ""),
+        parse_mode="Markdown",
+    )
+
+
 @bot.message_handler(func=lambda msg: True)
 def randomized_message(message):
     """
@@ -181,6 +261,7 @@ def randomized_message(message):
                 and message.reply_to_message.from_user.id == bot.get_me().id
             )
             or bot.get_me().username.lower() in message.text.lower()
+            or message.text.lower().startswith("шпак")
         ):
             message_text = generate_message(message)
             bot.reply_to(message, message_text)
@@ -200,8 +281,4 @@ def get_players_and_choices(message):
     return players, player_choices
 
 
-bot.set_update_listener(greet_user)
-bot.set_update_listener(update_message_list)
-bot.set_update_listener(add_active_users)
-
-bot.infinity_polling()
+main()
