@@ -224,6 +224,7 @@ footer {
   line-height: 133%;
   color: #1b1d1f;
   padding-left: 64px;
+  padding-right: 32px;
 }
 
 .team {
@@ -238,6 +239,7 @@ footer {
 }
 
 .team-member {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -272,14 +274,13 @@ footer {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
   padding: 0;
   background: linear-gradient(180deg, #22162b 0%, #451f55 100%);
 }
 
 .team-mentor {
-  width: 20%;
-  margin-left: 24px;
+  width: 100%;
+  margin-left: 32px;
 }
 
 .text-footer {
@@ -311,4 +312,25 @@ footer {
   text-align: center;
   margin: 0;
   -webkit-text-stroke: 0px #000;
+}
+
+.photo-mentor {
+  width: 96px;
+}
+
+.text-img {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  margin-right: 32px;
+}
+
+.margin-top {
+  margin-top: 16px;
+}
+
+.img-member {
+  width: 200px;
 }
